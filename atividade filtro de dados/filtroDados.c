@@ -43,11 +43,19 @@ void freeDados(){
 
 void writeDado(int number, image Out, int i, int j, int nc, int mn){
     
-   
+    int dadoNP = dados[number].nrDado * dados[number].ncDado;   //Numero de pixels do dado
     //Escreve o dado na imagem
+    int x = 0;
+    for(int r = 0; r < dados[number].ncDado; r+=((nc - 1)* dados[number].ncDado)){
+        for(int c = 0; c < dados[number].nrDado; c++){
+            Out[i * dados[number].ncDado + r + c] = dados[number].img[x];
+            x++;
+        }
+    }
+    
 
 
-    Out[i * nc + j] = number*mn/6;    //teste com intensidades
+    //Out[i * nc + j] = number*mn/6;    //teste com intensidades
 
     
 }
