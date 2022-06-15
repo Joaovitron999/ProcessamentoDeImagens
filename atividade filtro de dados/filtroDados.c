@@ -60,28 +60,57 @@ void writeDado(int number, image Out, int i, int j, int nc, int mn){
     
 }
 
-void filtroDados(image In, image Out, int nl, int nc, int mn)
-{
-    for (int i = 1; i < nl - 1; i++)
+void diminuir(image In, image Out, int nl, int nc, int mn){
+    int proporcao = nc/100;
+    int nlOut = nl/proporcao;
+    int ncOut = nc/proporcao;
+
+    
+
+    nl = nlOut;
+    nc = ncOut;
+    
+    //Out = img_alloc(nl, nc);
+
+    int i,j;
+    for (i = 0; i*j < nl*nc; i++)
     {
-        for (int j = 1; j < nc - 1; j++)
+        for (j = 0; j < nc; j++)
         {
-            Out[i * nc + j] = 0;
-            //aableble
-            int x = 0;
-            int number = 0;
-            int qntdTons = 6; // colocar 6
-            do
-            {
-              number = (mn/qntdTons)*(x) ;
-              x++;
-            }
-            while(In[i * nc + j]>= (mn/qntdTons)*(x) && !In[i * nc + j]<(mn/qntdTons)*(x+1));
-            writeDado(x,Out,i,j,nc,mn);
+            Out[i * nc + j] = 255;
         }
     }
+
+    printf("\n\t%d",nlOut);
+    printf("\n\t%d",ncOut);
+
+}
+
+void filtroDados(image In, image Out, int nl, int nc, int mn)
+{
+    diminuir(In,Out,nl,nc,mn);
+    // for (int i = 1; i < nl - 1; i++)
+    // {
+    //     for (int j = 1; j < nc - 1; j++)
+    //     {
+    //         //Out[i * nc + j] = 0;
+            
+    //         int x = 0;
+    //         int number = 0;
+    //         int qntdTons = 6; // colocar 6
+    //         do
+    //         {
+    //           number = (mn/qntdTons)*(x) ;
+    //           x++;
+    //         }
+    //         while(In[i * nc + j]>= (mn/qntdTons)*(x) && !In[i * nc + j]<(mn/qntdTons)*(x+1));
+    //         writeDado(x,Out,i,j,nc,mn);
+    //     }
+    // }
     freeDados();
 }
+
+
 
 
 
