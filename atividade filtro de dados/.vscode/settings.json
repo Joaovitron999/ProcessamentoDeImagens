@@ -1,3 +1,11 @@
 {
-  "makefile.extensionOutputFolder": "./.vscode"
+  "makefile.extensionOutputFolder": "./.vscode",
+  "files.associations": {
+    ".sequelizerc": "javascript",
+    ".stylelintrc": "json",
+    "*.tsx": "typescriptreact",
+    ".env.*": "dotenv",
+    ".prettierrc": "json",
+    "imagelib.h": "c"
+  }
 }

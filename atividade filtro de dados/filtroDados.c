@@ -8,59 +8,74 @@
 #include <string.h>
 #include "imagelib.h"
 
-void ordena(int *v, int n)
-{
-    int i, j, tmp;
-    for (i = 0; i < n; i++)
-    {
-        int m = i;
-        for (j = i + 1; j < n - 1; j++)
-            if (v[j] < v[m])
-                m = j;
-        tmp = v[i];
-        v[i] = v[m];
-        v[m] = tmp;
-    }
+// imagens dos dados
+struct dado{
+    image img;
+    int ncDado,nrDado,mlDado,tpDado;
+};
+//vetor de dados
+struct dado dados[6];
+int ncDado, nrDado, mlDado, tpDado;
+
+void lerDados(){
+     //Ler dados
+    int i = 0;
+    dados[i].img = img_get("0.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    i++;
+    dados[i].img = img_get("1.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    i++;
+    dados[i].img = img_get("2.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    i++;
+    dados[i].img = img_get("3.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    i++;
+    dados[i].img = img_get("4.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    i++;
+    dados[i].img = img_get("5.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    i++;
+    dados[i].img = img_get("6.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);  
 }
-void filtroDados(image In, image Out, int nl, int nc, int mn)
-{
-    int w[3][3] = {
-        {-1, 0, 1},
-        {-2, 0, 2},
-        {-1, 0, 1}};
-    for (int i = 1; i < nl - 1; i++)
-        for (int j = 1; j < nc - 1; j++)
-        {
-            int sum = 0, vetor[9];
-            vetor[0] = In[(i - 1) * nc + (j - 1)];
-            vetor[1] = In[(i - 1) * nc + j];
-            vetor[2] = In[(i - 1) * nc + (j + 1)];
-            vetor[3] = In[i * nc + (j - 1)];
-            vetor[4] = In[i * nc + j];
-            vetor[5] = In[i * nc + (j + 1)];
-            vetor[6] = In[(i + 1) * nc + (j - 1)];
-            vetor[7] = In[(i + 1) * nc + j];
-            vetor[8] = In[(i + 1) * nc + (j + 1)];
-            ordena(vetor, 9);
-            // for (int y = -1; y <= 1; y++)
-            //     for (int x = -1; x <= 1; x++)
-            //     {
-            //         vetor[0] = In[(i + y) * nc + (j + x)] * w[y + 1][x + 1];
-            //     }
-            // valor = sum;
-            // if (sum < 0)
-            //     valor = 0;
-            Out[i * nc + j] = vetor[4];
-            // Out[i * nc + j] = valor;
-            
-        }
+
+void freeDados(){
+    for(int i = 0; i < 6; i++){
+        img_free(dados[i].img);
+    }
 }
 
 void writeDado(int number, image Out, int i, int j, int nc, int mn){
+    
+   
     //Escreve o dado na imagem
 
-    Out[i * nc + j] = 1;    //teste com intensidades
+
+    Out[i * nc + j] = number*mn/6;    //teste com intensidades
+
+    
 }
+
+void filtroDados(image In, image Out, int nl, int nc, int mn)
+{
+    for (int i = 1; i < nl - 1; i++)
+    {
+        for (int j = 1; j < nc - 1; j++)
+        {
+            Out[i * nc + j] = 0;
+            //aableble
+            int x = 0;
+            int number = 0;
+            int qntdTons = 6; // colocar 6
+            do
+            {
+              number = (mn/qntdTons)*(x) ;
+              x++;
+            }
+            while(In[i * nc + j]>= (mn/qntdTons)*(x) && !In[i * nc + j]<(mn/qntdTons)*(x+1));
+            writeDado(x,Out,i,j,nc,mn);
+        }
+    }
+    freeDados();
+}
+
+
 
 void teste(image In, image Out, int nl, int nc, int mn)
 {
@@ -99,6 +114,9 @@ void msg(char *s)
 
 int main(int argc, char *argv[])
 {
+    lerDados();
+    //limpar tela
+    system("clear");
     int nc, nr, ml, tp;
     char *p, nameIn[100], nameOut[100], cmd[110];
     image In, Out;
@@ -109,8 +127,8 @@ int main(int argc, char *argv[])
     In = img_get(nameIn, &nr, &nc, &ml, GRAY);
     Out = img_alloc(nr, nc);
     //-- transformation
-    //filtroDados(In, Out, nr, nc, ml);
-    teste(In, Out, nr, nc, ml);
+    filtroDados(In, Out, nr, nc, ml);
+    //teste(In, Out, nr, nc, ml);
     //-- save image
     img_put(Out, nameOut, nr, nc, ml, GRAY);
     sprintf(cmd, "%s %s &", VIEW, nameOut);
