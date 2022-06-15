@@ -28,6 +28,7 @@ int img_free(image Im)
  *   in = input image name
  *   out = output image name
  *   tp = image type (BW, GRAY, COLOR)
+ 
  *-------------------------------------------------------------------------*/
 void img_name(char *name, char *in, char *out, int tp)
 {
