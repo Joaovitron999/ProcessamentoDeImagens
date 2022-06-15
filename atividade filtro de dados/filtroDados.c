@@ -59,7 +59,7 @@ void filtroDados(image In, image Out, int nl, int nc, int mn)
 void writeDado(int number, image Out, int i, int j, int nc, int mn){
     //Escreve o dado na imagem
 
-    Out[i * nc + j] = number;    //teste com intensidades
+    Out[i * nc + j] = 1;    //teste com intensidades
 }
 
 void teste(image In, image Out, int nl, int nc, int mn)
@@ -69,7 +69,7 @@ void teste(image In, image Out, int nl, int nc, int mn)
         {
             int x = 0;
             int number = 0;
-            int qntdTons = 3; // colocar 6
+            int qntdTons = 6; // colocar 6
             do
             {
               number = (mn/qntdTons)*(x) ;
@@ -95,7 +95,8 @@ void msg(char *s)
 
 /*-------------------------------------------------------------------------
  * main function
- *-------------------------------------------------------------------------*/
+*-------------------------------------------------------------------------*/
+
 int main(int argc, char *argv[])
 {
     int nc, nr, ml, tp;
