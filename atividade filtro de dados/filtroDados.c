@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "imagelib.h"
+#include <math.h>
 
 // imagens dos dados
 struct dado{
@@ -60,35 +61,33 @@ void writeDado(int number, image Out, int i, int j, int nc, int mn){
     
 }
 
-void diminuir(image In, image Out, int nl, int nc, int mn){
-    int proporcao = nc/100;
+void diminuir(image In, image Out, int nl, int nc, int mn, int* pL, int *pC){
+    int proporcao = ceil((float)nc/100);
     int nlOut = nl/proporcao;
     int ncOut = nc/proporcao;
 
     
-
-    nl = nlOut;
-    nc = ncOut;
-    
-    //Out = img_alloc(nl, nc);
-
     int i,j;
-    for (i = 0; i*j < nl*nc; i++)
+    for (i = 0; i < nlOut; i++)
     {
-        for (j = 0; j < nc; j++)
+        for (j = 0; j < ncOut; j++)
         {
-            Out[i * nc + j] = 255;
+            Out[i * ncOut + j] = In[proporcao * i * nc + j * proporcao];
         }
     }
 
     printf("\n\t%d",nlOut);
     printf("\n\t%d",ncOut);
 
+    *pL = nlOut;
+    *pC = ncOut;
+
+    In = Out;
 }
 
-void filtroDados(image In, image Out, int nl, int nc, int mn)
+void filtroDados(image In, image Out, int nl, int nc, int mn, int *pL,int *pC)
 {
-    diminuir(In,Out,nl,nc,mn);
+    diminuir(In,Out,nl,nc,mn,pL,pC);
     // for (int i = 1; i < nl - 1; i++)
     // {
     //     for (int j = 1; j < nc - 1; j++)
@@ -107,6 +106,7 @@ void filtroDados(image In, image Out, int nl, int nc, int mn)
     //         writeDado(x,Out,i,j,nc,mn);
     //     }
     // }
+
     freeDados();
 }
 
@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
     In = img_get(nameIn, &nr, &nc, &ml, GRAY);
     Out = img_alloc(nr, nc);
     //-- transformation
-    filtroDados(In, Out, nr, nc, ml);
+    filtroDados(In, Out, nr, nc, ml,&nr,&nc);
     //teste(In, Out, nr, nc, ml);
     //-- save image
     img_put(Out, nameOut, nr, nc, ml, GRAY);
