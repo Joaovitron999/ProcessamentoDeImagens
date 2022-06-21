@@ -42,23 +42,21 @@ void freeDados(){
     }
 }
 
-void writeDado(int number, image Out, int i, int j, int nc, int mn){
+void writeDado(int number, image Out, int i, int j, int nc, int mn){    
     
-    int dadoNP = dados[number].nrDado * dados[number].ncDado;   //Numero de pixels do dado
-    //Escreve o dado na imagem
-    int x = 0;
-    for(int r = 0; r < dados[number].ncDado; r+=((nc - 1)* dados[number].ncDado)){
-        for(int c = 0; c < dados[number].nrDado; c++){
-            Out[i * dados[number].ncDado + r + c] = dados[number].img[x];
-            x++;
-        }
-    }
+    // int dadoNP = dados[number].nrDado * dados[number].ncDado;   //Numero de pixels do dado
+    // //Escreve o dado na imagem
+    // int x = 0;
+    // for(int r = 0; r < dados[number].ncDado; r+=((nc - 1)* dados[number].ncDado)){
+    //     for(int c = 0; c < dados[number].nrDado; c++){
+    //         Out[i * dados[number].ncDado + r + c] = dados[number].img[x];
+    //         x++;
+    //     }
+    // }
+
     
-
-
     //Out[i * nc + j] = number*mn/6;    //teste com intensidades
-
-    
+    //printf("\n\t%d",number*mn/6);
 }
 
 void diminuir(image In, image Out, int nl, int nc, int mn, int* pL, int *pC){
@@ -85,28 +83,32 @@ void diminuir(image In, image Out, int nl, int nc, int mn, int* pL, int *pC){
     In = Out;
 }
 
+void separarTons(image In, image Out, int nl, int nc, int mn, int *pL,int *pC,int qntdTons){
+    for (int i = 0; i < *pL ; i++)
+    {
+        for (int j = 0; j < *pC ; j++)
+        {
+            
+            int x = 0;
+            int number = 0;
+            //qntdTons = 6; // colocar 6
+            do
+            {
+                number = (mn/qntdTons)*(x) ;
+                x++;
+            }
+            while(In[(i * (*pC)) + j]>= (mn/qntdTons)*(x) && !In[i * *pC + j]<(mn/qntdTons)*(x+1));
+            In[(i * (*pC)) + j] = number;
+        }
+    }
+    Out = In;
+}
+
 void filtroDados(image In, image Out, int nl, int nc, int mn, int *pL,int *pC)
 {
     diminuir(In,Out,nl,nc,mn,pL,pC);
-    // for (int i = 1; i < nl - 1; i++)
-    // {
-    //     for (int j = 1; j < nc - 1; j++)
-    //     {
-    //         //Out[i * nc + j] = 0;
-            
-    //         int x = 0;
-    //         int number = 0;
-    //         int qntdTons = 6; // colocar 6
-    //         do
-    //         {
-    //           number = (mn/qntdTons)*(x) ;
-    //           x++;
-    //         }
-    //         while(In[i * nc + j]>= (mn/qntdTons)*(x) && !In[i * nc + j]<(mn/qntdTons)*(x+1));
-    //         writeDado(x,Out,i,j,nc,mn);
-    //     }
-    // }
-
+    separarTons(In,Out,nl,nc,mn,pL,pC,6);
+    //writeDado();
     freeDados();
 }
 
