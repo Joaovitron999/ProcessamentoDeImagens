@@ -42,7 +42,11 @@ void freeDados(){
     }
 }
 
-void writeDado(int number, image Out, int i, int j, int nc, int mn){    
+void writeDado(image In,image Out, int *pC,int *pL, int mn){    
+
+    //redimensionar
+
+    
     
     // int dadoNP = dados[number].nrDado * dados[number].ncDado;   //Numero de pixels do dado
     // //Escreve o dado na imagem
@@ -108,7 +112,8 @@ void filtroDados(image In, image Out, int nl, int nc, int mn, int *pL,int *pC)
 {
     diminuir(In,Out,nl,nc,mn,pL,pC);
     separarTons(In,Out,nl,nc,mn,pL,pC,6);
-    //writeDado();
+    //void writeDado(image In,image Out, int *pC int *pL, int mn){    
+    writeDado(In,Out,pC,pL,mn);
     freeDados();
 }
 
@@ -131,7 +136,7 @@ void teste(image In, image Out, int nl, int nc, int mn)
             }
             while(In[i * nc + j]>= (mn/qntdTons)*(x) && !In[i * nc + j]<(mn/qntdTons)*(x+1));
             //int number = In[i * nc + j]/mn/6;
-            writeDado(number,Out,i,j,nc,mn);
+            //writeDado(number,Out,i,j,nc,mn);
         }
     }
 }
