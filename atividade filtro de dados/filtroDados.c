@@ -43,29 +43,38 @@ void freeDados(){
 }
 
 void writeDado(image In,image Out, int *pC,int *pL, int mn){        
-    int l,c;
-    l = *pL;
-    c = *pC;
+    // int l,c;
+    // l = *pL;
+    // c = *pC;
+
+    // int aux1 = (*pL)*40;
+
+    // printf("\n%d",*pC);
+    // printf("\n%d",*pL);
 
     
+    
+    // printf("\n%d",*pC);
+    // printf("\n%d",*pL*40);
+    
 
-    *pC = *pC * 10;
-    *pL = *pL * 10;
     // //Escreve o dado na imagem
-    int x = 0;
-    for (int i = 0; i < l; i+=40)
-    {
-        for (int j = 0; j < c; j+=40)
-        {
-            Out[(i) * c + (j)] = 300;//dados[(i+xL) * c + (j+xC)].img[xL*40 + xC];
-        }
-    }
+    // int x = 0;
+    // for (int i = 0; i < l; i+=40)
+    // {
+    //     for (int j = 0; j < c; j+=40)
+    //     {
+    //         Out[(i) * c + (j)] = 300;// teste //dados[(i+xL) * c + (j+xC)].img[xL*40 + xC];
+            
+    //     }
+    // }
     
 
 }
 
 void diminuir(image In, image Out, int nl, int nc, int mn, int* pL, int *pC){
     int proporcao = ceil((float)nc/100);
+    
     int nlOut = nl/proporcao;
     int ncOut = nc/proporcao;
 
@@ -79,7 +88,7 @@ void diminuir(image In, image Out, int nl, int nc, int mn, int* pL, int *pC){
         }
     }
 
-    
+    printf("%d %d", nlOut, ncOut);
 
     *pL = nlOut;
     *pC = ncOut;
@@ -114,38 +123,27 @@ void separarTons(image In, image Out, int nl, int nc, int mn, int *pL,int *pC,in
     *pMn = qntdTons;
 }
 
-void filtroDados(image In, image Out, int nl, int nc, int mn, int *pL,int *pC,int *pMn)
+void filtroDados(image In, image Out, int mn, int *pL,int *pC,int *pMn, image FinalOut, int * nLFinal, int * ncFinal)
 {
-    diminuir(In,Out,nl,nc,mn,pL,pC);
-    separarTons(Out,In,nl,nc,mn,pL,pC,6,pMn);
-    //void writeDado(image In,image Out, int *pC int *pL, int mn){    
-    writeDado(In,Out,pC,pL,mn);
+    diminuir(In,Out,*pL,*pC,mn,pL,pC);
+    
+    separarTons(Out,In,*pL,*pC,mn,pL,pC,6,pMn);
+    
+    FinalOut = img_alloc(*pL*40,*pC*40);
+    //puts("aaaaa");
+    *nLFinal = *pL;
+    *ncFinal = *pC;
+    //puts("bbbbb");
+
+    *nLFinal*=40;
+    *ncFinal*=40;
+
+    writeDado(In,FinalOut,pC,pL,mn);
     freeDados();
 }
 
 
 
-
-
-void teste(image In, image Out, int nl, int nc, int mn)
-{
-    for (int i = 0; i <= nl; i++){
-        for (int j = 0; j <= nc; j++)
-        {
-            int x = 0;
-            int number = 0;
-            int qntdTons = 6; // colocar 6
-            do
-            {
-              number = (mn/qntdTons)*(x) ;
-              x++;
-            }
-            while(In[i * nc + j]>= (mn/qntdTons)*(x) && !In[i * nc + j]<(mn/qntdTons)*(x+1));
-            //int number = In[i * nc + j]/mn/6;
-            //writeDado(number,Out,i,j,nc,mn);
-        }
-    }
-}
 
 
 
@@ -167,20 +165,30 @@ int main(int argc, char *argv[])
     lerDados();
     //limpar tela
     system("clear");
-    int nc, nr, ml, tp;
+    int nc, nr, ml, tp, nLFinal,ncFinal;
     char *p, nameIn[100], nameOut[100], cmd[110];
-    image In, Out;
+    image In, Out, FinalOut;
     if (argc < 2)
         msg(argv[0]);
     img_name(argv[1], nameIn, nameOut, GRAY);
     //-- read image
     In = img_get(nameIn, &nr, &nc, &ml, GRAY);
     Out = img_alloc(nr, nc);
+
+
     //-- transformation
-    filtroDados(In, Out, nr, nc, ml,&nr,&nc,&ml);
+    filtroDados(In, Out, ml,&nr,&nc,&ml,FinalOut,&nLFinal,&ncFinal);
+
+    puts("passa filtro");
     //teste(In, Out, nr, nc, ml);
     //-- save image
-    img_put(Out, nameOut, nr, nc, ml, GRAY);
+
+    printf("\n\n\\t%d, %d",nLFinal, ncFinal);
+
+    img_put(FinalOut, nameOut, nLFinal, ncFinal, ml, GRAY);
+
+    
+    puts("Img put");
     sprintf(cmd, "%s %s &", VIEW, nameOut);
     system(cmd);
     img_free(In);
