@@ -1,6 +1,6 @@
 /*-------------------------------------------------------------------------
- * Operacao de convolucao
- * Por Luiz Eduardo da Silva.
+ * Operacao de filtro de dados
+ * Por Jõao Vitor Fonseca, biblioteca adaptada de Luiz Eduardo da Silva.
  *-------------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -42,25 +42,26 @@ void freeDados(){
     }
 }
 
-void writeDado(image In,image Out, int *pC,int *pL, int mn){    
-
-    //redimensionar
+void writeDado(image In,image Out, int *pC,int *pL, int mn){        
+    int l,c;
+    l = *pL;
+    c = *pC;
 
     
-    
-    // int dadoNP = dados[number].nrDado * dados[number].ncDado;   //Numero de pixels do dado
+
+    *pC = *pC * 10;
+    *pL = *pL * 10;
     // //Escreve o dado na imagem
-    // int x = 0;
-    // for(int r = 0; r < dados[number].ncDado; r+=((nc - 1)* dados[number].ncDado)){
-    //     for(int c = 0; c < dados[number].nrDado; c++){
-    //         Out[i * dados[number].ncDado + r + c] = dados[number].img[x];
-    //         x++;
-    //     }
-    // }
-
+    int x = 0;
+    for (int i = 0; i < l; i+=40)
+    {
+        for (int j = 0; j < c; j+=40)
+        {
+            Out[(i) * c + (j)] = 300;//dados[(i+xL) * c + (j+xC)].img[xL*40 + xC];
+        }
+    }
     
-    //Out[i * nc + j] = number*mn/6;    //teste com intensidades
-    //printf("\n\t%d",number*mn/6);
+
 }
 
 void diminuir(image In, image Out, int nl, int nc, int mn, int* pL, int *pC){
@@ -78,8 +79,7 @@ void diminuir(image In, image Out, int nl, int nc, int mn, int* pL, int *pC){
         }
     }
 
-    printf("\n\t%d",nlOut);
-    printf("\n\t%d",ncOut);
+    
 
     *pL = nlOut;
     *pC = ncOut;
@@ -87,7 +87,7 @@ void diminuir(image In, image Out, int nl, int nc, int mn, int* pL, int *pC){
     In = Out;
 }
 
-void separarTons(image In, image Out, int nl, int nc, int mn, int *pL,int *pC,int qntdTons){
+void separarTons(image In, image Out, int nl, int nc, int mn, int *pL,int *pC,int qntdTons, int *pMn){
     for (int i = 0; i < *pL ; i++)
     {
         for (int j = 0; j < *pC ; j++)
@@ -102,16 +102,22 @@ void separarTons(image In, image Out, int nl, int nc, int mn, int *pL,int *pC,in
                 x++;
             }
             while(In[(i * (*pC)) + j]>= (mn/qntdTons)*(x) && !In[i * *pC + j]<(mn/qntdTons)*(x+1));
-            In[(i * (*pC)) + j] = number;
+            if(x>qntdTons){
+                In[(i * (*pC)) + j] = qntdTons;
+            }else{
+                In[(i * (*pC)) + j] = x;
+            }
+            
         }
     }
-    Out = In;
+    
+    *pMn = qntdTons;
 }
 
-void filtroDados(image In, image Out, int nl, int nc, int mn, int *pL,int *pC)
+void filtroDados(image In, image Out, int nl, int nc, int mn, int *pL,int *pC,int *pMn)
 {
     diminuir(In,Out,nl,nc,mn,pL,pC);
-    separarTons(In,Out,nl,nc,mn,pL,pC,6);
+    separarTons(Out,In,nl,nc,mn,pL,pC,6,pMn);
     //void writeDado(image In,image Out, int *pC int *pL, int mn){    
     writeDado(In,Out,pC,pL,mn);
     freeDados();
@@ -171,7 +177,7 @@ int main(int argc, char *argv[])
     In = img_get(nameIn, &nr, &nc, &ml, GRAY);
     Out = img_alloc(nr, nc);
     //-- transformation
-    filtroDados(In, Out, nr, nc, ml,&nr,&nc);
+    filtroDados(In, Out, nr, nc, ml,&nr,&nc,&ml);
     //teste(In, Out, nr, nc, ml);
     //-- save image
     img_put(Out, nameOut, nr, nc, ml, GRAY);
