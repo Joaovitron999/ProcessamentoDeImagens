@@ -110,20 +110,22 @@ void writeDado(image In, image Out, int *pC, int *pL, int mn)
     {
         for (int j = 0; j < c; j++)
         {
-            image dado = dados[In[(i * c) + j]].img; //pega o dado com relação ao pixel atual de In
+            image dado = dados[In[(i * c) + j]].img; // pega o dado com relação ao pixel atual de In
             // TODO: substituir cada pixel por um dado, lembrando que um dado é uma matriz de pixels
-            
         }
     }
 }
 
 void filtroDados(image In, image *Out, int nl, int nc, int mn, int *pL, int *pC, int *pMn)
 {
-    image FinalOut = img_alloc(*pL * 40, *pC * 40);
     diminuir(In, *Out, nl, nc, mn, pL, pC);
     separarTons(*Out, mn, pL, pC, 6, pMn);
+
+    image FinalOut = img_alloc(*pL * 40, *pC * 40);
     writeDado(*Out, FinalOut, pC, pL, mn);
-    (*Out) = FinalOut;
+
+    img_free(*Out);
+    (*Out) =  FinalOut;
 
     freeDados();
 }
