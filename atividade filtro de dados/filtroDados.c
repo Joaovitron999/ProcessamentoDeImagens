@@ -10,67 +10,49 @@
 #include <math.h>
 
 // imagens dos dados
-struct dado{
+struct dado
+{
     image img;
-    int ncDado,nrDado,mlDado,tpDado;
+    int ncDado, nrDado, mlDado, tpDado;
 };
-//vetor de dados
+// vetor de dados
 struct dado dados[6];
 int ncDado, nrDado, mlDado, tpDado;
 
-void lerDados(){
-     //Ler dados
+void lerDados()
+{
+    // Ler dados
     int i = 0;
-    dados[i].img = img_get("0.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    dados[i].img = img_get("./dados/dado-0.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
     i++;
-    dados[i].img = img_get("1.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    dados[i].img = img_get("./dados/dado-1.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
     i++;
-    dados[i].img = img_get("2.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    dados[i].img = img_get("./dados/dado-2.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
     i++;
-    dados[i].img = img_get("3.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    dados[i].img = img_get("./dados/dado-3.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
     i++;
-    dados[i].img = img_get("4.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    dados[i].img = img_get("./dados/dado-4.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
     i++;
-    dados[i].img = img_get("5.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    dados[i].img = img_get("./dados/dado-5.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
     i++;
-    dados[i].img = img_get("6.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);  
+    dados[i].img = img_get("./dados/dado-6.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
 }
 
-void freeDados(){
-    for(int i = 0; i < 6; i++){
+void freeDados()
+{
+    for (int i = 0; i < 6; i++)
+    {
         img_free(dados[i].img);
     }
 }
 
-void writeDado(image In,image Out, int *pC,int *pL, int mn){        
-    int l,c;
-    l = *pL;
-    c = *pC;
+void diminuir(image In, image Out, int nl, int nc, int mn, int *pL, int *pC)
+{
+    int proporcao = ceil((float)nc / 100);
+    int nlOut = nl / proporcao;
+    int ncOut = nc / proporcao;
 
-    
-
-    *pC = *pC * 10;
-    *pL = *pL * 10;
-    // //Escreve o dado na imagem
-    int x = 0;
-    for (int i = 0; i < l; i+=40)
-    {
-        for (int j = 0; j < c; j+=40)
-        {
-            Out[(i) * c + (j)] = 300;//dados[(i+xL) * c + (j+xC)].img[xL*40 + xC];
-        }
-    }
-    
-
-}
-
-void diminuir(image In, image Out, int nl, int nc, int mn, int* pL, int *pC){
-    int proporcao = ceil((float)nc/100);
-    int nlOut = nl/proporcao;
-    int ncOut = nc/proporcao;
-
-    
-    int i,j;
+    int i, j;
     for (i = 0; i < nlOut; i++)
     {
         for (j = 0; j < ncOut; j++)
@@ -79,57 +61,79 @@ void diminuir(image In, image Out, int nl, int nc, int mn, int* pL, int *pC){
         }
     }
 
-    
-
     *pL = nlOut;
     *pC = ncOut;
 
     In = Out;
 }
 
-void separarTons(image In, image Out, int nl, int nc, int mn, int *pL,int *pC,int qntdTons, int *pMn){
-    for (int i = 0; i < *pL ; i++)
+void separarTons(image In, int mn, int *pL, int *pC, int qntdTons, int *pMn)
+{
+    for (int i = 0; i < *pL; i++)
     {
-        for (int j = 0; j < *pC ; j++)
+        for (int j = 0; j < *pC; j++)
         {
-            
+
             int x = 0;
             int number = 0;
-            //qntdTons = 6; // colocar 6
+            // qntdTons = 6; // colocar 6
             do
             {
-                number = (mn/qntdTons)*(x) ;
+                number = (mn / qntdTons) * (x);
                 x++;
-            }
-            while(In[(i * (*pC)) + j]>= (mn/qntdTons)*(x) && !In[i * *pC + j]<(mn/qntdTons)*(x+1));
-            if(x>qntdTons){
+            } while (In[(i * (*pC)) + j] >= (mn / qntdTons) * (x) && !In[i * *pC + j] < (mn / qntdTons) * (x + 1));
+            if (x > qntdTons)
+            {
                 In[(i * (*pC)) + j] = qntdTons;
-            }else{
+            }
+            else
+            {
                 In[(i * (*pC)) + j] = x;
             }
-            
         }
     }
-    
+
     *pMn = qntdTons;
 }
 
-void filtroDados(image In, image Out, int nl, int nc, int mn, int *pL,int *pC,int *pMn)
+void writeDado(image In, image Out, int *pC, int *pL, int mn)
 {
-    diminuir(In,Out,nl,nc,mn,pL,pC);
-    separarTons(Out,In,nl,nc,mn,pL,pC,6,pMn);
-    //void writeDado(image In,image Out, int *pC int *pL, int mn){    
-    writeDado(In,Out,pC,pL,mn);
+    int l, c;
+    l = *pL;
+    c = *pC;
+
+    *pC = *pC * 40;
+    *pL = *pL * 40;
+    // //Escreve o dado na imagem
+    int x = 0;
+    for (int i = 0; i < l; i++)
+    {
+        for (int j = 0; j < c; j++)
+        {
+            image dado = dados[In[(i * c) + j]].img; // pega o dado com relação ao pixel atual de In
+            // TODO: substituir cada pixel por um dado, lembrando que um dado é uma matriz de pixels
+        }
+    }
+}
+
+void filtroDados(image In, image *Out, int nl, int nc, int mn, int *pL, int *pC, int *pMn)
+{
+    diminuir(In, *Out, nl, nc, mn, pL, pC);
+    separarTons(*Out, mn, pL, pC, 6, pMn);
+
+    image FinalOut = img_alloc(*pL * 40, *pC * 40);
+    writeDado(*Out, FinalOut, pC, pL, mn);
+
+    img_free(*Out);
+    (*Out) =  FinalOut;
+
     freeDados();
 }
 
-
-
-
-
 void teste(image In, image Out, int nl, int nc, int mn)
 {
-    for (int i = 0; i <= nl; i++){
+    for (int i = 0; i <= nl; i++)
+    {
         for (int j = 0; j <= nc; j++)
         {
             int x = 0;
@@ -137,17 +141,14 @@ void teste(image In, image Out, int nl, int nc, int mn)
             int qntdTons = 6; // colocar 6
             do
             {
-              number = (mn/qntdTons)*(x) ;
-              x++;
-            }
-            while(In[i * nc + j]>= (mn/qntdTons)*(x) && !In[i * nc + j]<(mn/qntdTons)*(x+1));
-            //int number = In[i * nc + j]/mn/6;
-            //writeDado(number,Out,i,j,nc,mn);
+                number = (mn / qntdTons) * (x);
+                x++;
+            } while (In[i * nc + j] >= (mn / qntdTons) * (x) && !In[i * nc + j] < (mn / qntdTons) * (x + 1));
+            // int number = In[i * nc + j]/mn/6;
+            // writeDado(number,Out,i,j,nc,mn);
         }
     }
 }
-
-
 
 void msg(char *s)
 {
@@ -160,12 +161,12 @@ void msg(char *s)
 
 /*-------------------------------------------------------------------------
  * main function
-*-------------------------------------------------------------------------*/
+ *-------------------------------------------------------------------------*/
 
 int main(int argc, char *argv[])
 {
     lerDados();
-    //limpar tela
+    // limpar tela
     system("clear");
     int nc, nr, ml, tp;
     char *p, nameIn[100], nameOut[100], cmd[110];
@@ -177,10 +178,10 @@ int main(int argc, char *argv[])
     In = img_get(nameIn, &nr, &nc, &ml, GRAY);
     Out = img_alloc(nr, nc);
     //-- transformation
-    filtroDados(In, Out, nr, nc, ml,&nr,&nc,&ml);
-    //teste(In, Out, nr, nc, ml);
+    filtroDados(In, &Out, nr, nc, ml, &nr, &nc, &ml);
+    // teste(In, Out, nr, nc, ml);
     //-- save image
-    img_put(Out, nameOut, nr, nc, ml, GRAY);
+    img_put(Out, nameOut, 2480, 3720, ml, GRAY);
     sprintf(cmd, "%s %s &", VIEW, nameOut);
     system(cmd);
     img_free(In);
