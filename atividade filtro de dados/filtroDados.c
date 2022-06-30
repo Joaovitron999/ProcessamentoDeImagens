@@ -73,27 +73,18 @@ void separarTons(image In, int mn, int *pL, int *pC, int qntdTons, int *pMn)
     {
         for (int j = 0; j < *pC; j++)
         {
-
-            int x = 0;
+            int x = -1;
             int number = 0;
             // qntdTons = 6; // colocar 6
             do
-            {
-                number = (mn / qntdTons) * (x);
+            {   
                 x++;
-            } while (In[(i * (*pC)) + j] >= (mn / qntdTons) * (x) && !In[i * *pC + j] < (mn / qntdTons) * (x + 1));
-            if (x > qntdTons)
-            {
-                In[(i * (*pC)) + j] = qntdTons;
-            }
-            else
-            {
-                In[(i * (*pC)) + j] = x;
-            }
+                number = (mn / qntdTons) * (x);
+            } while (In[i * *pC + j] > (mn / qntdTons) * (x));
+            In[(i * (*pC)) + j] = x;
         }
     }
-
-    *pMn = qntdTons;
+    //*pMn = qntdTons;
 }
 
 void writeDado(image In, image Out, int *pC, int *pL, int mn)
@@ -106,11 +97,13 @@ void writeDado(image In, image Out, int *pC, int *pL, int mn)
     *pL = *pL * 40;
     // //Escreve o dado na imagem
     int x = 0;
-    for (int i = 0; i < l; i++)
+    for (int i = 0; i < l; i++) //percorrem imagem pequena
     {
         for (int j = 0; j < c; j++)
         {
-            image dado = dados[In[(i * c) + j]].img; // pega o dado com relação ao pixel atual de In
+            printf("\n\t%d",((i) * *pC*40) + j*40);
+            Out[((i) * *pC*40) + j*40] = 255;
+            //Out[((i) * c) + j] = *dados[In[(i * c) + j]].img; // pega o dado com relação ao pixel atual de In
             // TODO: substituir cada pixel por um dado, lembrando que um dado é uma matriz de pixels
         }
     }
@@ -130,25 +123,6 @@ void filtroDados(image In, image *Out, int nl, int nc, int mn, int *pL, int *pC,
     freeDados();
 }
 
-void teste(image In, image Out, int nl, int nc, int mn)
-{
-    for (int i = 0; i <= nl; i++)
-    {
-        for (int j = 0; j <= nc; j++)
-        {
-            int x = 0;
-            int number = 0;
-            int qntdTons = 6; // colocar 6
-            do
-            {
-                number = (mn / qntdTons) * (x);
-                x++;
-            } while (In[i * nc + j] >= (mn / qntdTons) * (x) && !In[i * nc + j] < (mn / qntdTons) * (x + 1));
-            // int number = In[i * nc + j]/mn/6;
-            // writeDado(number,Out,i,j,nc,mn);
-        }
-    }
-}
 
 void msg(char *s)
 {
@@ -179,9 +153,8 @@ int main(int argc, char *argv[])
     Out = img_alloc(nr, nc);
     //-- transformation
     filtroDados(In, &Out, nr, nc, ml, &nr, &nc, &ml);
-    // teste(In, Out, nr, nc, ml);
     //-- save image
-    img_put(Out, nameOut, 2480, 3720, ml, GRAY);
+    img_put(Out, nameOut, nr, nc, ml, GRAY);
     sprintf(cmd, "%s %s &", VIEW, nameOut);
     system(cmd);
     img_free(In);
