@@ -101,8 +101,20 @@ void writeDado(image In, image Out, int *pC, int *pL, int mn)
     {
         for (int j = 0; j < c; j++)
         {
-            printf("\n\t%d",((i) * *pC*40) + j*40);
+            //printf("\n\t%d",((i) * *pC*40) + j*40);
+            //Out[((i) * *pC*40) + j*40] = 255;
+            //image *dadoPos = malloc(*pC * *pL * 40*40 * sizeof(image));
             Out[((i) * *pC*40) + j*40] = 255;
+
+            for (int k = 0; k < 40; k++)
+            {
+                for (int l = 0; l < 40; l++)
+                {
+                    //[k* *pC*40+l]  = 255;
+                    Out[((i * *pC*40 + j) + (k* *pC + l))] = dados[In[(i * c) + j]].img[k * 40 + l];
+                }
+            }
+            
             //Out[((i) * c) + j] = *dados[In[(i * c) + j]].img; // pega o dado com relação ao pixel atual de In
             // TODO: substituir cada pixel por um dado, lembrando que um dado é uma matriz de pixels
         }
