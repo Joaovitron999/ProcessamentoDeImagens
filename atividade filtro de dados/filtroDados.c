@@ -111,7 +111,7 @@ void writeDado(image In, image Out, int *pC, int *pL, int mn)
                 for (int l = 0; l < 40; l++)
                 {
                     //[k* *pC*40+l]  = 255;
-                    Out[((i * *pC*40 + j) + (k* *pC + l))] = dados[In[(i * c) + j]].img[k * 40 + l];
+                    Out[((i * *pC*40 + j * 40) + (k* *pC + l))] = dados[In[(i * c) + j]].img[k * 40 + l];
                 }
             }
             
