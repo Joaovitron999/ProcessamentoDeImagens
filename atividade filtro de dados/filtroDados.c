@@ -23,19 +23,19 @@ void lerDados()
 {
     // Ler dados
     int i = 0;
-    dados[i].img = img_get("./dados/dado-0.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    dados[i].img = img_get("./dados/0.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
     i++;
-    dados[i].img = img_get("./dados/dado-1.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    dados[i].img = img_get("./dados/1.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
     i++;
-    dados[i].img = img_get("./dados/dado-2.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    dados[i].img = img_get("./dados/2.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
     i++;
-    dados[i].img = img_get("./dados/dado-3.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    dados[i].img = img_get("./dados/3.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
     i++;
-    dados[i].img = img_get("./dados/dado-4.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    dados[i].img = img_get("./dados/4.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
     i++;
-    dados[i].img = img_get("./dados/dado-5.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    dados[i].img = img_get("./dados/5.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
     i++;
-    dados[i].img = img_get("./dados/dado-6.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
+    dados[i].img = img_get("./dados/6.pgm", &dados[i].nrDado, &dados[i].ncDado, &dados[i].mlDado, GRAY);
 }
 
 void freeDados()
@@ -45,6 +45,8 @@ void freeDados()
         img_free(dados[i].img);
     }
 }
+
+// função que redimensiona a imagem para ficar com uma largura máxima de 100
 
 void diminuir(image In, image Out, int nl, int nc, int mn, int *pL, int *pC)
 {
@@ -67,6 +69,8 @@ void diminuir(image In, image Out, int nl, int nc, int mn, int *pL, int *pC)
     In = Out;
 }
 
+//Função que separa os tons de cinza da imagem em uma faixa de 7 tons
+
 void separarTons(image In, int mn, int *pL, int *pC, int qntdTons, int *pMn)
 {
     for (int i = 0; i < *pL; i++)
@@ -84,8 +88,9 @@ void separarTons(image In, int mn, int *pL, int *pC, int qntdTons, int *pMn)
             In[(i * (*pC)) + j] = x;
         }
     }
-    //*pMn = qntdTons;
 }
+
+//Função que substitui o valor do pixel na imagem de entrada para seu respectivo dado na imagem de saída
 
 void writeDado(image In, image Out, int *pC, int *pL, int mn)
 {
@@ -101,22 +106,16 @@ void writeDado(image In, image Out, int *pC, int *pL, int mn)
     {
         for (int j = 0; j < c; j++)
         {
-            //printf("\n\t%d",((i) * *pC*40) + j*40);
-            //Out[((i) * *pC*40) + j*40] = 255;
-            //image *dadoPos = malloc(*pC * *pL * 40*40 * sizeof(image));
             Out[((i) * *pC*40) + j*40] = 255;
 
             for (int k = 0; k < 40; k++)
             {
                 for (int l = 0; l < 40; l++)
                 {
-                    //[k* *pC*40+l]  = 255;
                     Out[((i * *pC*40 + j * 40) + (k* *pC + l))] = dados[In[(i * c) + j]].img[k * 40 + l];
                 }
+
             }
-            
-            //Out[((i) * c) + j] = *dados[In[(i * c) + j]].img; // pega o dado com relação ao pixel atual de In
-            // TODO: substituir cada pixel por um dado, lembrando que um dado é uma matriz de pixels
         }
     }
 }
