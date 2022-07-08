@@ -1,3 +1,13 @@
+/*=============================================================
+2 * UNIFAL = Universidade Federal de Alfenas .
+3 * BACHARELADO EM CIENCIA DA COMPUTACAO.
+4 * Trabalho . . . . . . Imagem de dados
+5 * Disciplina . . . . . Processamento de Imagens
+6 * Professor  . . . . . Luiz Eduardo da Silva
+7 * Aluno  . . . . . . . João Vitor Fonseca 
+8 * Data . . . . . . . . 08/07/2022
+9 *=============================================================*/
+
 /*-------------------------------------------------------------------------
  * Operacao de filtro de dados
  * Por Jõao Vitor Fonseca, biblioteca adaptada de Luiz Eduardo da Silva.
